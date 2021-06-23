@@ -6,7 +6,8 @@ A Golang tool to whitelist ASN's based on organization name. This works by provi
 - Can be ran on any host, doesn't require a proxy or anything since its simply a packet sniffer
 
 ## Disclaimers
-- This tool is fairly janky, since it blocks the traffic after the IP connects, the first few packets may get through. Not a problem if you have SSL since the SSL handshake takes enough time to drop the connections. If it is one web page with port 80, the page may be returned in cases where this tool does not kill the connection fast enough. 
+- This tool is fairly janky, since it blocks the traffic after the IP connects, the first few packets may get through. Not a problem if you have SSL since the SSL handshake takes enough time to drop the connections. If it is one web page with port 80, the page may be returned in cases where this tool does not kill the connection fast enough.
+- Must be run as root  
 
 
 

@@ -1,5 +1,5 @@
 # goAllowOrgs
-A Golang tool to whitelist ASN's based on organization name. This works by providing a list of ASN org names. This tool uses goPacket to monitor incoming traffic, capturing the IP's and cheking the IP to see if it is a part of a whitelisted ASN. If it is not, it blocks that connection and future connections using iptables.
+A Golang tool to whitelist ASN's based on organization name. This works by providing a list of ASN org names. This tool uses goPacket to monitor incoming traffic, capturing the IP's and checking the IP to see if it is a part of a whitelisted ASN. If it is not, it blocks that connection and future connections using iptables.
 
 ## Uses
 - Whitelisting common ISP and target ASN's which in turn blocks connections from data centers.. think security tools..

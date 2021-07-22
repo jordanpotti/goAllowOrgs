@@ -104,12 +104,11 @@ func checkOrg(asnNumber int) bool {
 			log.Printf("[!] Allowed ASN: " + item)
 			fmt.Printf("[!] Allowed ASN: " + item  + "\n")
 			return true
-		} else {
-			log.Printf("[!] Blocked ASN: " + item)
-			fmt.Printf("[!] Blocked ASN: " + item  + "\n")
-			return false
 		}
 	}
+	//asnNumber, _ := strconv.Itoa(asnNumber)
+	log.Printf("[!] Blocked ASN: " + strconv.Itoa(asnNumber))
+	fmt.Printf("[!] Blocked ASN: " + strconv.Itoa(asnNumber)  + "\n")
 	return false
 }
 

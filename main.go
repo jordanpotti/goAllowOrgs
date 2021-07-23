@@ -24,7 +24,7 @@ var (
 	snaplen  = int32(1600)
 	promisc  = false
 	timeout  = pcap.BlockForever
-	filter   = "inbound and tcp[tcpflags] == tcp-syn and port "
+	filter   = "inbound and tcp[tcpflags] & (tcp-syn) !=0 and port "
 	devFound = false
 	allowed_orgs string
 	asndata string
@@ -89,8 +89,8 @@ func getOrgOffline(ip string) int {
 
 	as, err := db.Lookup(net.ParseIP(ip))
 	if err != nil {
-		log.Println("Cannot find ASN: " + ip)
-		fmt.Println("Cannot find ASN: " + ip)
+		go log.Println("Cannot find ASN: " + ip)
+		go fmt.Println("Cannot find ASN: " + ip)
 		return 0
 	}
 	//fmt.Println(as.Number)
@@ -101,14 +101,14 @@ func checkOrg(asnNumber int) bool {
 	for _, item := range validOrgs {
 		i, _ := strconv.Atoi(item)
 		if i == asnNumber {
-			log.Printf("[!] Allowed ASN: " + item)
-			fmt.Printf("[!] Allowed ASN: " + item  + "\n")
+			go log.Printf("[!] Allowed ASN: " + item)
+			go fmt.Printf("[!] Allowed ASN: " + item  + "\n")
 			return true
 		}
 	}
 	//asnNumber, _ := strconv.Itoa(asnNumber)
-	log.Printf("[!] Blocked ASN: " + strconv.Itoa(asnNumber))
-	fmt.Printf("[!] Blocked ASN: " + strconv.Itoa(asnNumber)  + "\n")
+	go log.Printf("[!] Blocked ASN: " + strconv.Itoa(asnNumber))
+	go fmt.Printf("[!] Blocked ASN: " + strconv.Itoa(asnNumber)  + "\n")
 	return false
 }
 
@@ -126,8 +126,8 @@ func blockIP(validateIP string) {
 		log.Println(err.Error())
 		return
 	}
-	log.Printf("[!] Blocked IP: " + validateIP)
-	fmt.Printf("[!] Blocked IP: " + validateIP +"\n")
+	go log.Printf("[!] Blocked IP: " + validateIP)
+	go fmt.Printf("[!] Blocked IP: " + validateIP +"\n")
 }
 
 
@@ -148,7 +148,7 @@ func getValidOrgs(asns []*Info ) {
 		for _, org := range asns {
 			if strings.Contains(strings.ToLower(org.Name), strings.ToLower(item)) {
 				validOrgs = append(validOrgs, org.Asn)
-				log.Printf("[!] Allowed ASN: " + org.Asn + "\n")
+				go log.Printf("[!] Allowed ASN: " + org.Asn + "\n")
 				//fmt.Printf("[!] Allowed ASN: " + org.Asn + "\n")
 			}
 		}
@@ -187,8 +187,8 @@ func runChecks(validateIP string, found bool) {
 		if !allowed {
 			go blockIP(validateIP)
 		} else {
-			log.Printf("[!] Allowed IP: " + validateIP)
-			fmt.Printf("[!] Allowed IP: " + validateIP  +"\n")
+			go log.Printf("[!] Allowed IP: " + validateIP)
+			go fmt.Printf("[!] Allowed IP: " + validateIP  +"\n")
 		}
 	}
 }

@@ -24,7 +24,7 @@ var (
 	snaplen  = int32(1600)
 	promisc  = false
 	timeout  = pcap.BlockForever
-	filter   = "inbound and tcp[tcpflags] & (tcp-syn) !=0 and port "
+	filter   = "inbound and tcp[tcpflags] & (tcp-syn) !=0 and (tcp[tcpflags] & tcp-ack == 0) and port "
 	devFound = false
 	allowed_orgs string
 	asndata string

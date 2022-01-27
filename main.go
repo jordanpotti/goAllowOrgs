@@ -31,6 +31,7 @@ var (
 	asndb string
 	port string
 	output string
+	whoislookup bool
 )
 
 type Info struct {
@@ -108,8 +109,21 @@ func checkOrg(asnNumber int) bool {
 	}
 	//asnNumber, _ := strconv.Itoa(asnNumber)
 	go log.Printf("[!] Blocked ASN: " + strconv.Itoa(asnNumber))
+	go printASNName(asnNumber)
 	go fmt.Printf("[!] Blocked ASN: " + strconv.Itoa(asnNumber)  + "\n")
 	return false
+}
+
+func printASNName(asnNumber int) {
+	if whoislookup {
+		whois := fmt.Sprintf("/usr/bin/whois -h whois.radb.net -- '-i origin %s' | /usr/bin/grep -i desc | /usr/bin/head -1", strconv.Itoa(asnNumber))
+		out, err := exec.Command("/bin/bash", "-c", whois).Output()
+		if err != nil {
+			fmt.Printf("\t[-] error looking up %s: %s\n", strconv.Itoa(asnNumber), err)
+		} else {
+			fmt.Printf("\t%s: %s", strconv.Itoa(asnNumber), out)
+		}
+	}
 }
 
 func blockIP(validateIP string) {
@@ -202,7 +216,7 @@ func printBanner() {
 
 
 func main() {
-	
+
 	printBanner()
 	flag.StringVar(&allowed_orgs, "orgs", "allowed_orgs.txt", "File with line delimited orgs to allow")
 	flag.StringVar(&asndata, "asn_csv", "asndata.csv", "CSV file with org name to ASN number")
@@ -210,6 +224,7 @@ func main() {
 	flag.StringVar(&port, "port", "443", "Port to monitor")
 	flag.StringVar(&output, "output", "goFW.log", "Log file name")
 	flag.StringVar(&iface, "interface", "ens5", "Interface name")
+	flag.BoolVar(&whoislookup, "whoislookup", false, "Lookup connecting IPs via whois")
 	flag.Parse()
 	//fmt.Printf("[!] Warming Up..")
 	log.Printf("[!] Warming Up..")
@@ -227,7 +242,7 @@ func main() {
 		log.Fatalf("error opening file: %v", err)
 	}
 	asns := []*Info{}
-	
+
 
 	if err := gocsv.UnmarshalFile(asnFile, &asns); err != nil {
 		log.Panicln(err)

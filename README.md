@@ -14,9 +14,13 @@ A Golang tool to whitelist ASN's based on organization name. This works by provi
 ## Getting Started
 
 #### Pull ASN data from db-ip, various libraries and add required headers
+
+You'll need to update the IP to ASN db link. Go here, check the box, copy url: https://db-ip.com/db/download/ip-to-asn-lite
+
 ```
+IPASN="https://download.db-ip.com/free/dbip-asn-lite-2021-09.csv.gz"
 sudo apt-get install libpcap-dev
-curl https://download.db-ip.com/free/dbip-asn-lite-2021-09.csv.gz -o asndata.csv.gz
+curl $IPASN -o asndata.csv.gz
 gunzip asndata.csv.gz
 sed -i '1 i\first,last,asn,org_name' asndata.csv
 curl -fsSL https://github.com/banviktor/asnlookup/releases/download/v0.1.0/asnlookup-linux-amd64-v0.1.0.tar.gz | sudo tar -zx 
@@ -36,6 +40,14 @@ spectrum
 ````
 
 #### Now you should be ready to run the tool
+
+If you're building
+
+```
+go mod tidy
+go build -o goAllowOrgs main.go
+```
+
 
 ````
 root@ip-10-10-90-48:/home/jordan/test# ./main -h
